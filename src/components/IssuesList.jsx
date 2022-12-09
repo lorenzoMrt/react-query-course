@@ -1,16 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import fetchWithError from "../helpers/fetchWithError";
 import { IssueItem } from "./IssueItem";
 
 export default function IssuesList({ labels, status }) {
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isError, error } = useQuery(
     ["issues", { labels, status }],
     () => {
       const statusValue = status ? `&status=${status}` : "";
       const labelsValue = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetch(`/api/issues?${labelsValue}${statusValue}`).then((res) =>
-        res.json()
-      );
+      return fetchWithError(`/api/issues?${labelsValue}${statusValue}`);
     },
     {
       staleTime: 1000 * 60,
@@ -52,6 +51,8 @@ export default function IssuesList({ labels, status }) {
       <h2>Issues List</h2>
       {isLoading ? (
         <p>Loading...</p>
+      ) : isError ? (
+        <p>{error.message}</p>
       ) : searchQuery.fetchStatus === "idle" &&
         searchQuery.isLoading === true ? (
         <ul className="issues-list">

@@ -37,7 +37,7 @@ export const IssueHeader = ({
         <span className="created-by">
           {createdUser.isLoading ? "..." : createdUser.data?.name}
         </span>
-        opened this issue {relativeDate(createdDate)} . {comments.length}{" "}
+        opened this issue {relativeDate(createdDate)} . {comments?.length}{" "}
         comments
       </div>
     </header>
