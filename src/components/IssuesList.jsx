@@ -1,15 +1,21 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useQuery } from "react-query";
 import { IssueItem } from "./IssueItem";
 
 export default function IssuesList({ labels, status }) {
-  const { data, isLoading } = useQuery(["issues", { labels, status }], () => {
-    const statusValue = status ? `&status=${status}` : "";
-    const labelsValue = labels.map((label) => `labels[]=${label}`).join("&");
-    return fetch(`/api/issues?${labelsValue}${statusValue}`).then((res) =>
-      res.json()
-    );
-  });
+  const { data, isLoading } = useQuery(
+    ["issues", { labels, status }],
+    () => {
+      const statusValue = status ? `&status=${status}` : "";
+      const labelsValue = labels.map((label) => `labels[]=${label}`).join("&");
+      return fetch(`/api/issues?${labelsValue}${statusValue}`).then((res) =>
+        res.json()
+      );
+    },
+    {
+      staleTime: 1000 * 60,
+    }
+  );
 
   const [searchValue, setSearchValue] = useState("");
 
