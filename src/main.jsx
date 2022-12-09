@@ -15,7 +15,13 @@ new Promise((res) => setTimeout(res, 100))
     })
   )
   .then(() => {
-    const queryClient = new QueryClient();
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 1000 * 60,
+        },
+      },
+    });
     ReactDOM.render(
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>
