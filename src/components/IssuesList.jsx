@@ -6,10 +6,12 @@ import { IssueItem } from "./IssueItem";
 export default function IssuesList({ labels, status }) {
   const { data, isLoading, isError, error } = useQuery(
     ["issues", { labels, status }],
-    () => {
+    ({ signal }) => {
       const statusValue = status ? `&status=${status}` : "";
       const labelsValue = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetchWithError(`/api/issues?${labelsValue}${statusValue}`);
+      return fetchWithError(`/api/issues?${labelsValue}${statusValue}`, {
+        queryClient,
+      });
     }
   );
 
@@ -17,8 +19,10 @@ export default function IssuesList({ labels, status }) {
 
   const searchQuery = useQuery(
     ["issues", "search", searchValue],
-    () =>
-      fetch(`/api/search/issues?q=${searchValue}`).then((res) => res.json()),
+    ({ signal }) =>
+      fetch(`/api/search/issues?q=${searchValue}`, { signal }).then((res) =>
+        res.json()
+      ),
     {
       enabled: searchValue.length > 0,
     }
