@@ -1,17 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import fetchWithError from "../helpers/fetchWithError";
 import { IssueItem } from "./IssueItem";
 
 export default function IssuesList({ labels, status }) {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery(
     ["issues", { labels, status }],
-    ({ signal }) => {
+    async ({ signal }) => {
       const statusValue = status ? `&status=${status}` : "";
       const labelsValue = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetchWithError(`/api/issues?${labelsValue}${statusValue}`, {
-        queryClient,
+      const results = await fetchWithError(
+        `/api/issues?${labelsValue}${statusValue}`,
+        {
+          signal,
+        }
+      );
+      results.forEach((issue) => {
+        queryClient.setQueryData(["issues", issue.number.toString()], issue);
       });
+      return results;
     }
   );
 
