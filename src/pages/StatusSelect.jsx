@@ -5,10 +5,10 @@ const statusList = [
   { id: "done", label: "Done" },
   { id: "cancelled", label: "Cancelled" },
 ];
-export function StatusSelect({ value, onChange }) {
+export function StatusSelect({ value, onChange, noEmptyOption = false }) {
   return (
     <select value={value} onChange={onChange} className={"status-select"}>
-      <option value={""}>Select status</option>
+      {noEmptyOption ? null : <option value={""}>Select status</option>}
       {statusList.map((status) => (
         <option value={status.id} key={status.id}>
           {status.label}
