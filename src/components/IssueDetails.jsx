@@ -2,7 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { relativeDate } from "../helpers/relativeDate";
 import { useUserData } from "../helpers/useUserData";
+import { IssueAssignment } from "./IssueAssignment";
 import { IssueHeader } from "./IssueHeader";
+import { IssueLabels } from "./IssueLabels";
+import { IssueStatus } from "./IssueStatus";
 
 function useIssueData(issueId) {
   return useQuery(["issues", issueId], ({ signal }) => {
@@ -64,7 +67,20 @@ export default function IssueDetails() {
                 ))
               )}
             </section>
-            <aside></aside>
+            <aside>
+              <IssueStatus
+                status={issueQuery.data.status}
+                issueNumber={issueQuery.data.number.toString()}
+              />
+              <IssueAssignment
+                assignee={issueQuery.data.assignee}
+                issueNumber={issueQuery.data.number.toString()}
+              />
+              <IssueLabels
+                issueNumber={issueQuery.data.number.toString()}
+                labels={issueQuery.data.labels}
+              />
+            </aside>
           </main>
         </div>
       )}
