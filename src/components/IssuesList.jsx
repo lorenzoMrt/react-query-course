@@ -2,15 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import fetchWithError from "../helpers/fetchWithError";
 import { IssueItem } from "./IssueItem";
+import Loader from "./Loader";
 
 export default function IssuesList({ labels, status }) {
-  const { data, isLoading, isError, error } = useQuery(
+  const { data, isLoading, isError, error, isFetching } = useQuery(
     ["issues", { labels, status }],
     ({ signal }) => {
       const statusValue = status ? `&status=${status}` : "";
       const labelsValue = labels.map((label) => `labels[]=${label}`).join("&");
       return fetchWithError(`/api/issues?${labelsValue}${statusValue}`, {
-        queryClient,
+        signal,
       });
     }
   );
@@ -49,7 +50,7 @@ export default function IssuesList({ labels, status }) {
           }}
         ></input>
       </form>
-      <h2>Issues List</h2>
+      <h2>Issues List {isFetching && <Loader />}</h2>
       {isLoading ? (
         <p>Loading...</p>
       ) : isError ? (
