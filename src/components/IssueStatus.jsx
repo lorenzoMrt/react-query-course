@@ -5,11 +5,11 @@ import { StatusSelect } from "../pages/StatusSelect";
 export const IssueStatus = ({ status, issueNumber }) => {
   const queryClient = useQueryClient();
   const setStatus = useMutation(
-    () => {
-      fetch(`/api/issues/${issueNumber}`, {
+    (status) => {
+      return fetch(`/api/issues/${issueNumber}`, {
         method: "PUT",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(status),
+        body: JSON.stringify({ status }),
       }).then((res) => res.json());
     },
     {
