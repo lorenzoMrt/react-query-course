@@ -52,7 +52,6 @@ export const IssueLabels = ({ labels, issueNumber }) => {
       },
     }
   );
-  console.log(labelsQuery.data);
   return (
     <div className="issue-options">
       <div>
